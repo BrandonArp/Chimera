@@ -4,54 +4,41 @@ require 'fileutils'
 def get_package_info(package_name)
   package_info = `apt-cache show #{package_name}`
   puts "error looking up package '#{package_name}'" unless $? == 0
-  return package_info
+  info = {}
+  package_info.each_line { |line| 
+    if (line =~ /(\w+): (.*)$/)
+      info[$1] = $2
+    end
+  }
+  return info
 end
 
 def get_package_provides(package_info)
-  package_info.each_line { |line|
-    if (line =~ /Provides: (.*)/)
-      return $1.split(', ')
-    end
-  }
+  return package_info["Provides"].split(', ') if package_info["Provides"]
+  return []
 end
 
 def get_package_filename(package_info)
-  package_info.each_line { |line|
-    if (line =~ /Filename: (.*)/)
-      return $1
-    end
-  }
+  return package_info["Filename"]
 end
 
 def get_package_version(package_info)
-  package_info.each_line { |line|
-    if (line =~ /Version: (.*)/)
-      return $1
-    end
-  }
+  return package_info["Version"]
 end
 
 def get_package_architecture(package_info)
-  package_info.each_line { |line|
-    if (line =~ /Architecture: (.*)/)
-      return $1
-    end
-  }
+  return package_info["Architecture"]
 end
 
 def get_package_name(package_info)
-  package_info.each_line { |line|
-    if (line =~ /Package: (.*)/)
-      return $1
-    end
-  }
+  return package_info["Package"]
 end
 
 def get_cache_deb(package_info) 
   package_name = get_package_name(package_info)
   package_version = get_package_version(package_info)
   package_architecture = get_package_architecture(package_info)
-  deb_name = "#{package_name}_#{package_version}_#{package_architecture}"
+  deb_name = "#{package_name}_#{package_version}_#{package_architecture}.deb"
   deb_name = deb_name.gsub(":", "%3a")
   return "/var/cache/apt/archives/#{deb_name}"
 end
@@ -60,7 +47,7 @@ def recurse_prep(package_name, recurse_hash = Hash.new(), provides = Hash.new())
   package_depends = `apt-cache depends #{package_name}`
   in_or_block = false
   package_depends.each_line { |line|
-    if (line =~ /Depends:\s<?([^>]+)\s*/)
+    if (line =~ /Depends:\s?([^<> ]+)\s*/)
       dependency = $1.chomp
       store_dep = false
       if (!in_or_block)
@@ -93,8 +80,8 @@ def recurse_prep(package_name, recurse_hash = Hash.new(), provides = Hash.new())
   if not File.exist?(my_cache_deb)
     `apt-get install -y -d --reinstall #{package_name}`
   end
-  puts "extracting #{my_cache_deb} to #{package_loc}"
   `dpkg -x #{my_cache_deb} #{package_loc}`
+  puts "error extracting package '#{package_name}'" unless $? == 0
 end
 
 package_name = ARGV[0]
