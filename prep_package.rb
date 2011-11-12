@@ -51,6 +51,14 @@ def get_cache_deb(package_info)
   return deb_pkg
 end
 
+def prep_multiple(package_list, manifest_file)
+  recurse_hash = Hash.new()
+  provides = Hash.new()
+  package_list.each do |package| 
+    recurse_prep(package, manifest_file, recurse_hash, provides)
+  end
+end
+
 def recurse_prep(package_name, manifest_file, recurse_hash = Hash.new(), provides = Hash.new())
   package_depends = `apt-cache depends #{package_name}`
   in_or_block = false
@@ -97,11 +105,10 @@ end
 
 $ARCHITECTURE = `dpkg --print-architecture`.chomp
 
-package_name = ARGV[0]
-manifest_output = ARGV[1]
+packages = ARGV.slice(1..-1)
+manifest_output = ARGV[0]
 manifest_file = File.open(manifest_output, 'w')
-puts "package: #{package_name}"
-output = `apt-get install -y -d #{package_name}` 
+output = `apt-get install -y -d #{packages.join(" ")}` 
 puts "error getting package. are you running as root?\n#{output}" unless $? == 0
-recurse_prep(package_name, manifest_file)
+prep_multiple(packages, manifest_file)
 

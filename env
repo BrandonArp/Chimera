@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+environment = ARGV[0]
+cmd = ARGV[1]
+puts "cmd: #{cmd}"
+puts "ARGV[2]: #{ARGV[2]}"
+pass_on = []
+
+index = 2
+while index < ARGV.length do
+  pass_on.push(ARGV[index])
+  index = index + 1
+end
+
+c_pre = "/chimera/env/#{environment}"
+
+chroot = false
+puts "pass_on: " + pass_on.join(" ")
+if not chroot
+  ENV["PATH"] = "#{c_pre}/usr/local/sbin:#{c_pre}/usr/local/bin:#{c_pre}/usr/sbin:#{c_pre}/usr/bin:#{c_pre}/sbin:#{c_pre}/bin:" + ENV["PATH"]
+  ENV["LD_LIBRARY_PATH"] = "#{c_pre}/usr/lib:#{c_pre}/lib"
+#  ENV["LD_PRELOAD"] = "#{c_pre}/usr/lib:#{c_pre}/lib"
+  Kernel.exec("#{cmd}", *pass_on)
+else
+  
+  ENV["PATH"] = "#/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:" + ENV["PATH"]
+  
+  ENV["LD_LIBRARY_PATH"] = "/usr/lib:/lib"
+  Dir.chroot("#{c_pre}")
+  #Dir.chdir("/usr/sbin")
+  #puts Dir.entries(".").join("\n")
+  Kernel.system("#{cmd}", *pass_on)
+end

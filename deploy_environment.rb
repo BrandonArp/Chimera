@@ -8,7 +8,7 @@ manifest = ARGV[1]
 hash = Digest::SHA256.hexdigest(File.read(manifest))
 
 manifest_file = File.new(manifest, "r")
-new_env = "/chimera/env_raw/#{environment_name}/#{hash}/"
+new_env = "/chimera/_env/#{environment_name}/#{hash}/"
 FileUtils.rm_rf(new_env)
 while (line = manifest_file.gets)
   if (line =~ /(.*)=>(.*)/)
@@ -21,6 +21,9 @@ while (line = manifest_file.gets)
       local = f.sub(package_root, "")
       if (File.directory?(f))
         FileUtils.mkpath("#{new_env}#{local}")
+      elsif (File.symlink?(f))
+        File.unlink("#{new_env}#{local}") if File.exist?("#{new_env}#{local}")
+        File.symlink(File.readlink(f), "#{new_env}#{local}")
       else
         File.symlink(f, "#{new_env}#{local}")
       end
