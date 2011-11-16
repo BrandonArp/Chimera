@@ -1,11 +1,44 @@
 #!/usr/bin/env ruby
-environment = ARGV[0]
-cmd = ARGV[1]
-puts "cmd: #{cmd}"
-puts "ARGV[2]: #{ARGV[2]}"
-pass_on = []
+require 'optparse'
+options = {}
 
-index = 2
+opts = OptionParser.new
+opts.banner = "Usage: env [options] command"
+
+opts.on("-e", "--environment [ENVIRONMENT]", "chimera environment to run in") do |env|
+  options[:env] = env
+end
+
+opts.on("-h", "--help", "display this help") do
+  puts opts
+  exit
+end
+
+opts.on("-r", "--chroot", "use chroot jail to launch scripts") do |chroot|
+  options[:chroot] = true
+end
+opts.parse!
+
+cwd = Dir.pwd
+if (options[:env])
+  environment = options[:env]
+elsif (not options[:env] and cwd =~ /chimera\/_env?\/([^\/]+)\//) 
+  environment = $1
+else
+  puts "UNKNOWN ENVIRONMENT"
+end
+cmd = ARGV[0]
+if not cmd
+  puts opts
+  puts "NO COMMAND GIVEN TO RUN" 
+exit
+end
+
+pass_on = []
+ENV["ENV_NAME"] = environment
+ENV["ENV_ROOT"] = "/chimera/env/#{environment}"
+
+index = 1
 while index < ARGV.length do
   pass_on.push(ARGV[index])
   index = index + 1
@@ -13,8 +46,7 @@ end
 
 c_pre = "/chimera/env/#{environment}"
 
-chroot = false
-puts "pass_on: " + pass_on.join(" ")
+chroot = options[:chroot]
 if not chroot
   ENV["PATH"] = "#{c_pre}/usr/local/sbin:#{c_pre}/usr/local/bin:#{c_pre}/usr/sbin:#{c_pre}/usr/bin:#{c_pre}/sbin:#{c_pre}/bin:" + ENV["PATH"]
   ENV["LD_LIBRARY_PATH"] = "#{c_pre}/usr/lib:#{c_pre}/lib"
