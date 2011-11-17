@@ -1,4 +1,4 @@
-FILES = *.rb
+FILES = *.rb env
 OUTDIR = build
 
 build: builddir debcontrol

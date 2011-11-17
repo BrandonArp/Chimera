@@ -5,7 +5,7 @@ options = {}
 opts = OptionParser.new
 opts.banner = "Usage: env [options] command"
 
-opts.on("-e", "--environment [ENVIRONMENT]", "chimera environment to run in") do |env|
+opts.on("-e", "--environment ENVIRONMENT", "chimera environment to run in") do |env|
   options[:env] = env
 end
 
