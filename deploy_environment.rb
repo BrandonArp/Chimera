@@ -16,7 +16,10 @@ while (line = manifest_file.gets)
     package_version = $2
     
     package_root = "/chimera/packages/#{package_name}/#{package_version}/"
-    puts "package #{package_name} not found in chimera package cache" if not File.exist?(package_root)
+    if not File.exist(package_root) do 
+      puts "package #{package_name} not found in chimera package cache" 
+      exit 1
+    end
     Find.find(package_root) do |f|
       local = f.sub(package_root, "")
       if (File.directory?(f))
