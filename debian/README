@@ -1,0 +1,6 @@
+The Debian Package chimera
+----------------------------
+
+Chimera will not work properly with all packages and may require adapter packages or custom startup scripts. Please report these
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Thu, 17 Nov 2011 16:55:42 -0800

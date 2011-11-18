@@ -1,0 +1,15 @@
+Source: chimera
+Section: misc
+Priority: optional
+Maintainer: Brandon Arp <brandon@arpnetworking.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.2
+Homepage: http://www.arpnetworking.com
+Vcs-Git: ssh://git@git.arpnetworking.com/chimera.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/chimera.git;a=summary
+
+Package: chimera
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter
+Description: deployment system
+ The chimera deployment system uses semi-isolated directories to maintain a consistent, portable environment in which to deploy code

@@ -1,21 +1,8 @@
 FILES = *.rb env
-OUTDIR = build
 
-build: builddir debcontrol
-	mkdir -p $(OUTDIR)/chimera/bin
-	cp $(FILES) $(OUTDIR)/chimera/bin/
+build:
 
-deb: build
-	dpkg-deb -b build chimera.deb
+install:
+	mkdir -p $(DESTDIR)/chimera/bin/
+	cp $(FILES) $(DESTDIR)/chimera/bin/
 
-debcontrol:
-	cp -r DEBIAN $(OUTDIR)/DEBIAN
-
-builddir:
-	mkdir -p $(OUTDIR)
-
-clean: cleandeb
-	rm -rf build
-
-cleandeb:
-	rm -f chimera.deb
