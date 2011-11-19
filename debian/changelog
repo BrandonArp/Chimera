@@ -1,4 +1,10 @@
-chimera (1.0.1.0) unstable; urgency=low
+chimera (1.0.1.1) oneiric; urgency=low
+
+  * Bumping version number for apt repo test
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Thu, 17 Nov 2011 16:55:42 -0800
+
+chimera (1.0.1.0) oneiric; urgency=low
 
   * Initial Release.
 
