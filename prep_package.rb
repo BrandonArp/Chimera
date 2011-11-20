@@ -1,55 +1,6 @@
 #!/usr/bin/env ruby
 require 'fileutils'
-
-def get_package_info(package_name)
-  package_info = `apt-cache show #{package_name}`
-  puts "error looking up package '#{package_name}'" unless $? == 0
-  info = {}
-  package_info.each_line { |line| 
-    if (line =~ /(\w+): (.*)$/)
-      info[$1] = $2
-    end
-  }
-  return info
-end
-
-def get_package_provides(package_info)
-  return package_info["Provides"].split(', ') if package_info["Provides"]
-  return []
-end
-
-def get_package_filename(package_info)
-  return package_info["Filename"]
-end
-
-def get_package_version(package_info)
-  return package_info["Version"]
-end
-
-def get_package_architecture(package_info)
-  return package_info["Architecture"]
-end
-
-def get_package_name(package_info)
-  return package_info["Package"]
-end
-
-def get_cache_deb(package_info) 
-  package_name = get_package_name(package_info)
-  package_version = get_package_version(package_info)
-  package_architecture = get_package_architecture(package_info)
-  deb_name = "#{package_name}_#{package_version}_#{package_architecture}.deb"
-  deb_name = deb_name.gsub(":", "%3a")
-  deb_pkg = "/var/cache/apt/archives/#{deb_name}" 
-  return deb_pkg if File.exist?(deb_pkg)
-  if (package_architecture == "all" and $ARCHITECTURE == "i386")
-    package_architecture = "i386"
-  end
-  deb_name = "#{package_name}_#{package_version}_#{package_architecture}.deb"
-  deb_name = deb_name.gsub(":", "%3a")
-  deb_pkg = "/var/cache/apt/archives/#{deb_name}" 
-  return deb_pkg
-end
+require 'lib/aptutils.rb'
 
 def prep_multiple(package_list, manifest_file)
   recurse_hash = Hash.new()
@@ -102,8 +53,6 @@ def recurse_prep(package_name, manifest_file, recurse_hash = Hash.new(), provide
   `dpkg -x #{my_cache_deb} #{package_loc}`
   puts "error extracting package '#{package_name}'" unless $? == 0
 end
-
-$ARCHITECTURE = `dpkg --print-architecture`.chomp
 
 packages = ARGV.slice(1..-1)
 manifest_output = ARGV[0]

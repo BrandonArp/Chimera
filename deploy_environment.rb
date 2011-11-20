@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+
 require 'find'
 require 'digest'
 require 'fileutils'
@@ -10,19 +11,19 @@ hash = Digest::SHA256.hexdigest(File.read(manifest))
 manifest_file = File.new(manifest, "r")
 new_env = "/chimera/_env/#{environment_name}/#{hash}/"
 FileUtils.rm_rf(new_env)
-while (line = manifest_file.gets)
-  if (line =~ /(.*)=>(.*)/)
+while (line = manifest_file.gets) do
+  if (line =~ /(.*)=>(.*)/) 
     package_name = $1
     package_version = $2
     
     package_root = "/chimera/packages/#{package_name}/#{package_version}/"
-    if not File.exist(package_root) do 
+    if not File.exist?(package_root)  
       puts "package #{package_name} not found in chimera package cache" 
       exit 1
     end
     Find.find(package_root) do |f|
       local = f.sub(package_root, "")
-      if (File.directory?(f))
+      if (File.directory?(f)) 
         FileUtils.mkpath("#{new_env}#{local}")
       elsif (File.symlink?(f))
         File.unlink("#{new_env}#{local}") if File.exist?("#{new_env}#{local}")
