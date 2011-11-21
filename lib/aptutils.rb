@@ -1,12 +1,25 @@
 def get_package_info(package_name)
   package_info = `apt-cache show #{package_name}`
   puts "error looking up package '#{package_name}'" unless $? == 0
-  info = {}
-  package_info.each_line { |line| 
-    if (line =~ /(\w+): (.*)$/)
-      info[$1] = $2
+  blocks = package_info.split("\n\n")
+  info = {} 
+  for block in blocks do
+    block_info = {}
+    package_info.each_line do |line| 
+      if (line =~ /(\w+): (.*)$/)
+        block_info[$1] = $2
+      end
     end
-  }
+    #check for a higher version, only return the highest version
+    if info.empty?
+      info = block_info
+    end
+    
+    if (block_info["Version"])
+      i_version = info["Version"]
+      b_version = block_info["Version"]
+    end
+  end
   return info
 end
 
@@ -39,6 +52,9 @@ def get_cache_deb(package_info)
   package_version = get_package_version(package_info)
   package_architecture = get_package_architecture(package_info)
   attempt_chain = [package_architecture]
+  deb_name = "#{package_name}_#{package_version}_#{package_architecture}.deb"
+  deb_name = deb_name.gsub(":", "%3a")
+  deb_pkg_orig = "/var/cache/apt/archives/#{deb_name}" 
   if (package_architecture == "all")
     attempt_chain.push($ARCHITECTURE)
   end
@@ -57,5 +73,6 @@ def get_cache_deb(package_info)
     puts "WARNING: Could not find package at #{deb_pkg}"
     failed = true
   end
+  return deb_pkg_orig
 end
 
