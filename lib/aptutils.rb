@@ -116,7 +116,6 @@ def get_cache_deb(package_info)
     failures.push(deb_pkg)
     failed = true
   end
-  puts "ERROR: could not find package #{package_name}.  Looked for #{failures}"
   return deb_pkg_orig
 end
 

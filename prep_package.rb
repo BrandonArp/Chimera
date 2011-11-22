@@ -43,13 +43,19 @@ def recurse_prep(package_name, manifest_file, recurse_hash = Hash.new(), provide
   my_version = get_package_version(my_info)
   my_cache_deb = get_cache_deb(my_info)
   package_loc = "/chimera/packages/#{package_name}/#{my_version}"
+  if not File.exist?(my_cache_deb)
+    `apt-get install -y -d --reinstall #{package_name}`
+  end
+  my_cache_deb = get_cache_deb(my_info)
+  if not File.exist?(my_cache_deb)
+    puts "FATAL ERROR: could not download or determine downloaded location for package #{package_name}"
+    exit -1
+  end
+  
   if not File.directory?(package_loc)
     FileUtils.mkpath(package_loc)
   end
 
-  if not File.exist?(my_cache_deb)
-    `apt-get install -y -d --reinstall #{package_name}`
-  end
   `dpkg -x #{my_cache_deb} #{package_loc}`
   puts "error extracting package '#{package_name}'" unless $? == 0
 end

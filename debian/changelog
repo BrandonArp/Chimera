@@ -1,10 +1,17 @@
+chimera (1.0.1.5) oneiric; urgency=low
+
+  * dont write an error on package cache name lookup
+  * download the package if it does not exist on disk
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Mon, 21 Nov 2011 21:04:58 -0800
+
 chimera (1.0.1.4) oneiric; urgency=low
 
   * Added better version parsing
   * Will use the latest version of the package
   * Added set_env_status script 
 
- -- Brandon Arp <brandon@brandonlappy>  Mon, 21 Nov 2011 08:51:33 -0800
+ -- Brandon Arp <brandon@arpnetworking.com>  Mon, 21 Nov 2011 08:51:33 -0800
 
 chimera (1.0.1.3) oneiric; urgency=low
 
