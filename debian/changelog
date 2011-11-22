@@ -1,3 +1,9 @@
+chimera (1.0.1.6) oneiric; urgency=low
+
+  * fixed library not copying to output
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Tue, 22 Nov 2011 09:17:48 -0800
+
 chimera (1.0.1.5) oneiric; urgency=low
 
   * dont write an error on package cache name lookup
