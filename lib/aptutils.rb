@@ -22,7 +22,7 @@ def get_package_info(package_name)
   for block in blocks do
     block_info = {}
     block.each_line do |line| 
-      if (line =~ /(\w+): (.*)$/)
+      if (line =~ /^\s*(\S+): (.*)$/)
         block_info[$1] = $2
       end
     end
