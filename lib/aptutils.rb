@@ -1,11 +1,11 @@
 def parse_version(version_string)
   version = []
-  re = /([^0-9]*([0-9])+([a-zA-Z]?))/
+  re = /([^0-9]*([0-9]+)([a-zA-Z]?))/
   to_match = version_string
   while to_match != "" do
     match = re.match(to_match)
     version.push(Integer(match.captures[1]))
-    if (match.captures[2])
+    if (match.captures[2][0] != nil)
       version.push(match.captures[2][0])
     end
     to_match = match.post_match

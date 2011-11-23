@@ -1,3 +1,9 @@
+chimera (1.0.1.7) oneiric; urgency=low
+
+  * fixed version comparison 
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Tue, 22 Nov 2011 17:59:25 -0800
+
 chimera (1.0.1.6) oneiric; urgency=low
 
   * fixed library not copying to output
