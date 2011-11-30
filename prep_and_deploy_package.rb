@@ -29,5 +29,6 @@ end
 
 puts "prep_and_deploy_package with manifest #{manifest_output}, environment #{environment}, packages [#{package_arg}]" 
 
+system 'apt-get update'
 system "#{local_dir}/prep_package.rb #{manifest_output}#{package_arg}"
 system "#{local_dir}/deploy_environment.rb #{environment} #{manifest_output}"

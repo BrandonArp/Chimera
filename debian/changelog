@@ -1,3 +1,9 @@
+chimera (1.0.1.10) oneiric; urgency=low
+
+  * more mature server
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Wed, 30 Nov 2011 08:43:19 -0800
+
 chimera (1.0.1.9) oneiric; urgency=low
 
   * adding chimera server prototype
