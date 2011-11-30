@@ -1,3 +1,12 @@
+chimera (1.0.1.9) oneiric; urgency=low
+
+  * adding chimera server prototype
+  * deploy scripts add script directory to their search path to allow calling
+     outside of the /chimera/bin directory
+  * more win 
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Mon, 28 Nov 2011 00:56:16 -0800
+
 chimera (1.0.1.8) oneiric; urgency=low
 
   * fixed parsing of info fields due to - character 

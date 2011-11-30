@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'fileutils'
+$: << File.dirname( __FILE__) 
 require 'lib/aptutils.rb'
 
 def install_package(package_name)

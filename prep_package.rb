@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 require 'fileutils'
+
+$: << File.dirname( __FILE__) 
 require 'lib/aptutils.rb'
 
 def prep_multiple(package_list, manifest_file)
