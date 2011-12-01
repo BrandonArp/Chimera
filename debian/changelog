@@ -1,3 +1,9 @@
+chimera (1.0.1.11) oneiric; urgency=low
+
+  * use ruby 1.9.1 as the dependent package 
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Thu, 01 Dec 2011 00:35:56 -0800
+
 chimera (1.0.1.10) oneiric; urgency=low
 
   * more mature server
