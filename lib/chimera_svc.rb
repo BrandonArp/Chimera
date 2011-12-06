@@ -9,10 +9,9 @@ def get_chimera_client()
   transport = Thrift::BufferedTransport.new(Thrift::Socket.new('localhost', 6882))
   protocol = Thrift::BinaryProtocol.new(transport)
   client = Chimera::Client.new(protocol)
-  client.open()
+  transport.open()
   return client
 end
-
 
 def start_package_deployment(deployment_id, packages, environment, client = nil)
   client = get_chimera_client() if client == nil
@@ -26,12 +25,12 @@ end
 
 def set_deployment_status(deployment_id, status, client = nil)
   client = get_chimera_client() if client == nil
-  return client.getDeploymentStatus(deployment_id)
+  client.reportStatus(deployment_id, status)
 end
 
-def set_deployment_status(deployment_id, status, client = nil)
+def chimera_ping(client = nil)
   client = get_chimera_client() if client == nil
-  client.reportStatus(deployment_id, status)
+  client.ping()
 end
 
 def map_status(status)
