@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'fileutils'
+require 'optparse'
 
 $: << File.dirname( __FILE__) 
 require 'lib/aptutils.rb'
@@ -62,8 +63,41 @@ def recurse_prep(package_name, manifest_file, recurse_hash = Hash.new(), provide
   puts "error extracting package '#{package_name}'" unless $? == 0
 end
 
-packages = ARGV.slice(1..-1)
-manifest_output = ARGV[0]
+opt = OptionParser.new
+
+packages = []
+manifest_output = ""
+
+opt.on("-p", "--packages x,y,z", Array, "list of packages") do |packs|
+  packages = packs
+end
+
+opt.on("-m", "--manifest MANIFEST", "manifest output file") do |manifest|
+  manifest_output = manifest
+end
+
+opt.on("-h", "--help", "print this help dialog") do 
+  puts opt
+  exit 0
+end
+
+opt.parse!
+
+error = false
+if packages == []
+  error = true
+  puts "required argument packages not found"
+end
+if manifest_output == ""
+  error = true
+  puts "required argument manifest not found"
+end
+
+if error
+  puts opt
+  exit 1
+end
+
 manifest_file = File.open(manifest_output, 'w')
 output = `apt-get install -y -d #{packages.join(" ")}` 
 puts "error getting package. are you running as root?\n#{output}" unless $? == 0

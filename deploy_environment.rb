@@ -3,9 +3,44 @@
 require 'find'
 require 'digest'
 require 'fileutils'
+require 'optparse'
 
-environment_name = ARGV[0]
-manifest = ARGV[1]
+opts = OptionParser.new
+
+environment_name = ""
+manifest = ""
+
+opts.on("-e", "--environment ENVIRONMENT", "environment to build") do |env|
+  environment_name = env
+end
+
+opts.on("-m", "--manifest MANIFEST", "manifest input file") do |mani|
+  manifest = mani
+end
+
+opts.on("-h", "--help", "display this help dialog") do
+  puts opts
+  exit 0
+end
+
+opts.parse!
+
+error = false
+if environment_name == ""
+  puts "required argument evironment not found"
+  error = true
+end
+
+if manifest == ""
+  puts "required argument manifest not found"
+  error = true
+end
+
+if error == true
+  puts opts
+  exit 1
+end
+
 hash = Digest::SHA256.hexdigest(File.read(manifest))
 
 manifest_file = File.new(manifest, "r")

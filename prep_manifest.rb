@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'fileutils'
+require 'optparse'
 $: << File.dirname( __FILE__) 
 require 'lib/aptutils.rb'
 
@@ -18,7 +19,25 @@ def install_package(package_name)
 end
 
 packages = []
-manifest = ARGV[0]
+manifest = nil 
+
+opts = OptionParser.new
+
+opts.on('-m', '--manifest MANIFEST', "manifest file to prepare") do |mani|
+  manifest = mani
+end
+
+opts.on('-h', '--help', 'show this help dialog') do 
+  puts opts
+  exit 0
+end
+
+if not manifest
+  puts 'missing required argument manifest'
+  puts opts
+  exit 1
+end
+
 manifest_file = File.open(manifest, 'r')
 manifest_file.each_line do |line| 
   if (line =~ /(.*)=>(.*)/)
