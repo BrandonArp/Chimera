@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $: << File.dirname( __FILE__) 
 
-require 'lib/chimera_svc.rb'
+require 'lib/chimera_svc'
 require 'optparse'
 require 'tempfile'
 

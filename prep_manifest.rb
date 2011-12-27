@@ -2,21 +2,22 @@
 require 'fileutils'
 require 'optparse'
 $: << File.dirname( __FILE__) 
-require 'lib/aptutils.rb'
+require 'lib/aptutils'
+require 'lib/deploy'
 
-def install_package(package_name)
-  #install me
-  my_info = get_package_info(package_name)
-  my_version = get_package_version(my_info)
-  my_cache_deb = get_cache_deb(my_info)
-  package_loc = "/chimera/packages/#{package_name}/#{my_version}"
-  if not File.directory?(package_loc)
-    FileUtils.mkpath(package_loc)
-  end
-
-  `dpkg -x #{my_cache_deb} #{package_loc}`
-  puts "error extracting package '#{package_name}'" unless $? == 0
-end
+#def install_package(package_name)
+#  #install me
+#  my_info = get_package_info(package_name)
+#  my_version = get_package_version(my_info)
+#  my_cache_deb = get_cache_deb(my_info)
+#  package_loc = "/chimera/packages/#{package_name}/#{my_version}"
+#  if not File.directory?(package_loc)
+#    FileUtils.mkpath(package_loc)
+#  end
+#
+#  `dpkg -x #{my_cache_deb} #{package_loc}`
+#  puts "error extracting package '#{package_name}'" unless $? == 0
+#end
 
 packages = []
 manifest = nil 

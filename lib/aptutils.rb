@@ -13,11 +13,9 @@ def parse_version(version_string)
   return version
 end
 
-def get_package_info(package_name)
-  package_info = `apt-cache show #{package_name}`
-  puts "error looking up package '#{package_name}'" unless $? == 0
-  blocks = package_info.split("\n\n")
-#  pp blocks
+
+def parse_package_info(control_blob)
+  blocks = control_blob.split("\n\n")
   info = {} 
   for block in blocks do
     block_info = {}
@@ -42,6 +40,23 @@ def get_package_info(package_name)
       puts "no version found in block"
     end
   end
+  return info
+end
+
+def get_deb_info(deb_file)
+  if not File.exist?(deb_file)
+    raise "deb file not found: #{deb_file}"
+  end
+  package_info = `dpkg-deb --info #{deb_file}`
+  info = parse_package_info(package_info)
+  return info
+end
+  
+
+def get_package_info(package_name)
+  package_info = `apt-cache show #{package_name}`
+  puts "error looking up package '#{package_name}'" unless $? == 0
+  info = parse_package_info(package_info) 
   return info
 end
 
@@ -111,9 +126,10 @@ def get_cache_deb(package_info)
   root_cache = "/var/cache/apt/archives"
   while not tried_download do
     if do_download
+      puts "trying to download package that's not in the cache"
       root_cache = "/tmp"
       Dir.chdir("/tmp")
-      `apt-get download #{package_name}`
+      system("apt-get download #{package_name}")
       tried_download = true
     end
     for arch in attempt_chain do

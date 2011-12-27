@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+$: << File.dirname( __FILE__) 
+
+require 'lib/deploy'
 
 require 'find'
 require 'digest'
@@ -50,23 +53,7 @@ while (line = manifest_file.gets) do
   if (line =~ /(.*)=>(.*)/) 
     package_name = $1
     package_version = $2
-    
-    package_root = "/chimera/packages/#{package_name}/#{package_version}/"
-    if not File.exist?(package_root)  
-      puts "package #{package_name} not found in chimera package cache" 
-      exit 1
-    end
-    Find.find(package_root) do |f|
-      local = f.sub(package_root, "")
-      if (File.directory?(f)) 
-        FileUtils.mkpath("#{new_env}#{local}")
-      elsif (File.symlink?(f))
-        File.unlink("#{new_env}#{local}") if File.exist?("#{new_env}#{local}")
-        File.symlink(File.readlink(f), "#{new_env}#{local}")
-      else
-        File.symlink(f, "#{new_env}#{local}")
-      end
-    end
+    build_sym_links(package_name, package_version, new_env)   
   end
 end
 
