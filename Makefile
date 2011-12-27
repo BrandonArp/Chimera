@@ -3,6 +3,8 @@ FILES = *.rb env chimera-server
 .PHONY: chimera-server
 
 build: chimera-server
+	mkdir -p lib
+	cp -r chimera-service/gen-rb lib
 
 install: build
 	mkdir -p $(DESTDIR)/chimera/bin/
@@ -17,3 +19,4 @@ chimera-server:
 clean:
 	$(MAKE) -C chimera-service $(MFLAGS) $@
 	rm -f chimera-server
+	$(RM) -r lib/gen-rb

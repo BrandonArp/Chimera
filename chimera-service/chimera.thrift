@@ -5,18 +5,20 @@ exception InternalError {
 
 enum DeployStatus {
   UNKNOWN = 0,
-  START = 1,
+  STARTED = 1,
   PULL = 2,
   CHECK = 3,
   EXTRACT = 4,
-  BUILD = 5,
+  BUILD = 5, 
   PREACTIVATE = 6,
   FLIP = 7,
   ACTIVATE = 8,
   POSTACTIVATE = 9,
   PREDEACTIVATE = 10,
   DEACTIVATE = 11,
-  POSTDEACTIVATE = 12
+  POSTDEACTIVATE = 12,
+  COMPLETE = 13,
+  PENDINGSTART = 14
 }
 
 struct PullStatus {

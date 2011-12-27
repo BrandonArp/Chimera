@@ -13,9 +13,10 @@ chimera (1.0.1.12) oneiric; urgency=low
 
 chimera (1.0.1.11) oneiric; urgency=low
 
+  * use ruby 1.9.1 as the dependent package 
   * fixed some minor bugs 
 
- -- Brandon Arp <brandon@arpnetworking.com>  Tue, 13 Dec 2011 23:32:41 -0800
+ -- Brandon Arp <brandon@arpnetworking.com>  Thu, 01 Dec 2011 00:35:56 -0800
 
 chimera (1.0.1.10) oneiric; urgency=low
 
