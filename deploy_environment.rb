@@ -72,6 +72,6 @@ end
 
 #delete the old symlink
 env = "/chimera/env/#{environment_name}" 
-File.delete(env) if File.exist?(env)
+File.delete(env) if File.symlink?(env)
 FileUtils.mkpath("/chimera/env/") if not File.exist?("/chimera/env/")
 File.symlink(new_env, env) 

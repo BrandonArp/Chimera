@@ -3,6 +3,7 @@ $: << File.dirname( __FILE__)
 
 require 'lib/chimera_svc.rb'
 require 'optparse'
+require 'tempfile'
 
 
 opts = OptionParser.new
@@ -25,8 +26,12 @@ opts.on("-h", "--help", "this help dialog") do
   exit 0
 end 
 
-if args[:manifest] and args[:package]
-  puts "must only specify package list or manifest file, not both"
+opts.parse!
+
+if not (args[:manifest].nil? ^ args[:package].nil?)
+  puts "must only specify package list or manifest file, but not both"
+  puts "manifest: #{args[:manifest]}"
+  puts "packages: #{args[:package]}"
   puts opts
   exit 1
 end
@@ -34,6 +39,7 @@ end
 if not args[:environment]
   puts "must specify an environment to deploy to"
   puts opts
+  exit 1
 end
 
 local_dir = File.expand_path(File.dirname(__FILE__))
@@ -54,7 +60,7 @@ if packages
   packages.each do |package|
     package_arg = package_arg + "," + package
   end
-  package_arg = package_arg[1..-0]
+  package_arg = package_arg[1..-1]
   puts "prep_and_deploy_package with packages#{package_arg}, environment #{environment}"
 end
 
@@ -64,10 +70,13 @@ end
 
 system 'apt-get update'
 if packages
-  #TODO need to generate a manifest file name
-  system "#{local_dir}/prep_package.rb -m #{output_manifest} -p #{package_arg}"
-end
-if manifest
+  temp_file = Tempfile.new("deploy")
+  temp_file.close
+  #make sure we define the manifest for deploying it
+  manifest = temp_file.path
+  system "#{local_dir}/prep_package.rb -m #{manifest} -p #{package_arg}"
+elsif manifest
   system "#{local_dir}/prep_manifest.rb -m #{manifest}"
 end
-system "#{local_dir}/deploy_environment.rb #{environment} #{manifest}"
+system "#{local_dir}/deploy_environment.rb -e #{environment} -m #{manifest}"
+system "#{local_dir}/set_env_status.rb -a activate -e #{environment}"

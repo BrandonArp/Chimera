@@ -27,6 +27,7 @@ using namespace std;
 
 typedef struct {
   string id;
+  pid_t pid;
   DeployStatus::type status;
   string manifest;
   PullStatus pullStatus;
@@ -130,37 +131,37 @@ class ChimeraHandler : virtual public ChimeraIf {
       cout << "Major error! cannot fork!" << endl;
     }
     else if (pid == 0) {
-      pid_t innerPid = fork();
-      if (innerPid < 0 ) {
-        cout << "Major error! cannot detach child by forking!" << endl;
-      }
-      else if (innerPid > 0) {
-        _exit(0);
-      }
-      //We're the child of the child (properly detached from the parent)
+      //We're the child of the child
       //time to exec the ruby script
-      cout << "Hello from the detached child!" << endl;
+      cout << "Hello from the child!" << endl;
       string manifestFile = "/tmp/manifest." + deploymentId;
       string path = "/chimera/bin/prep_and_deploy_package.rb";
       string name = "prep_and_deploy_package.rb";
-      char** args = new char*[targets.size() + 4];
-      args[targets.size() + 3] = 0;
-      char* namec = new char[name.size() + 1];
-      strcpy(namec, name.c_str());
-      args[0] = namec;
-      char* manifestc = new char[manifestFile.size() + 1];
-      strcpy(manifestc, manifestFile.c_str());
-      args[1] = manifestc;
-      char* envc = new char[environment.size() + 1];
-      strcpy(envc, environment.c_str());
-      args[2] = envc;
+      vector<string> fullArgs;
+
+      fullArgs.push_back(name);
+      fullArgs.push_back("-e");
+      fullArgs.push_back(environment);
+      fullArgs.push_back("-p");
+
+      string packageArg;
+      if (targets.size() > 0) { packageArg = targets[0]; }      
+      for (int i = 1; i < targets.size(); ++i)
+      {
+        packageArg = packageArg + string(",") + targets[i];
+      }
+      fullArgs.push_back(packageArg);
+      char** args = new char*[fullArgs.size()+1];
+      args[fullArgs.size()] = NULL;
       
-      for (int i = 0; i < targets.size(); ++i) {
-        char* arg = new char[targets[i].size() + 1];
-        strcpy(arg, targets[i].c_str());
-        args[i+3] = arg;
+      
+      for (int i = 0; i < fullArgs.size(); ++i) {
+        char* arg = new char[fullArgs[i].size() + 1];
+        strcpy(arg, fullArgs[i].c_str());
+        args[i] = arg;
       }
       cout << "running execvp on " << path << endl;
+      cout << "calling with env = " << environment << " and packages = " << packageArg << endl;
       int ret = execvp(path.c_str(), args);
       int err = errno;
       cout << "FAILED TO EXEC! error value is " << err << ": " << strerror(err) << endl;

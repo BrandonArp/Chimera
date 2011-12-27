@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'fileutils'
 require 'optparse'
+require 'pp'
 
 $: << File.dirname( __FILE__) 
 require 'lib/aptutils.rb'
@@ -81,6 +82,7 @@ opt.on("-h", "--help", "print this help dialog") do
   exit 0
 end
 
+pp ARGV
 opt.parse!
 
 error = false

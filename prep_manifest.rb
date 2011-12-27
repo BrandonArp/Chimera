@@ -32,6 +32,8 @@ opts.on('-h', '--help', 'show this help dialog') do
   exit 0
 end
 
+opts.parse!
+
 if not manifest
   puts 'missing required argument manifest'
   puts opts

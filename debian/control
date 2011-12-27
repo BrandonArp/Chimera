@@ -9,9 +9,9 @@ Vcs-Git: ssh://git@git.arpnetworking.com/chimera.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/chimera.git;a=summary
 
 Package: chimera
-Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter
-Description: Chimera deployment system
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, ruby-thrift
+Description: Environment deployment system
  The chimera deployment system uses semi-isolated 
  directories to maintain a consistent, portable environment
  in which to deploy code

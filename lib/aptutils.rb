@@ -104,17 +104,29 @@ def get_cache_deb(package_info)
   if ($ARCHITECTURE == "amd64")
     attempt_chain.push("i386")
   end
+  tried_download = false
+  do_download = false
   failed = false
   failures = []
-  for arch in attempt_chain do
-    deb_name = "#{package_name}_#{package_version}_#{arch}.deb"
-    deb_name = deb_name.gsub(":", "%3a")
-    deb_pkg = "/var/cache/apt/archives/#{deb_name}" 
-    if File.exist?(deb_pkg) 
-      return deb_pkg
+  root_cache = "/var/cache/apt/archives"
+  while not tried_download do
+    if do_download
+      root_cache = "/tmp"
+      Dir.chdir("/tmp")
+      `apt-get download #{package_name}`
+      tried_download = true
     end
-    failures.push(deb_pkg)
-    failed = true
+    for arch in attempt_chain do
+      deb_name = "#{package_name}_#{package_version}_#{arch}.deb"
+      deb_name = deb_name.gsub(":", "%3a")
+      deb_pkg = "#{root_cache}/#{deb_name}" 
+      if File.exist?(deb_pkg) 
+        return deb_pkg
+      end
+      failures.push(deb_pkg)
+      failed = true
+    end
+    do_download = true
   end
   return deb_pkg_orig
 end
