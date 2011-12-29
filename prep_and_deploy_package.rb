@@ -69,22 +69,22 @@ if manifest
 end
 
 report_status = false
-temp = Tempfile.new(deployment_id)
-manifest_output = temp.path
-temp.close()
-set_deployment_status(deployment_id, DeployStatus::STARTED, client) if report_status
+#temp = Tempfile.new(deployment_id)
+#manifest_output = temp.path
+#temp.close()
+#set_deployment_status(deployment_id, DeployStatus::STARTED, client) if report_status
 system 'apt-get update'
 if packages
   temp_file = Tempfile.new("deploy")
   temp_file.close
   #make sure we define the manifest for deploying it
   manifest = temp_file.path
-  set_deployment_status(deployment_id, DeployStatus::PULL, client) if report_status
+#  set_deployment_status(deployment_id, DeployStatus::PULL, client) if report_status
   system "#{local_dir}/prep_package.rb -m #{manifest} -p #{package_arg}"
 elsif manifest
   system "#{local_dir}/prep_manifest.rb -m #{manifest}"
 end
-set_deployment_status(deployment_id, DeployStatus::EXTRACT, client) if report_status
+#set_deployment_status(deployment_id, DeployStatus::EXTRACT, client) if report_status
 system "#{local_dir}/deploy_environment.rb -e #{environment} -m #{manifest}"
 system "#{local_dir}/set_env_status.rb -a activate -e #{environment}"
-set_deployment_status(deployment_id, DeployStatus::COMPLETE, client) if report_status
+#set_deployment_status(deployment_id, DeployStatus::COMPLETE, client) if report_status

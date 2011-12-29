@@ -31,8 +31,8 @@ def execute_scripts(admin_dir, standard_dir)
       Process.waitpid(other)
     else
       cmd = "/chimera/bin/env -e #{$ENV_NAME} #{script}"
-      puts "would be execing #{cmd} as admin" if as_admin
-      puts "would be execing #{cmd}" if as_admin == false
+      puts "execing #{cmd} as admin" if as_admin
+      puts "execing #{cmd}" if as_admin == false
       if as_admin == false
         uid = Etc.getpwnam("nobody").uid
         Process::Sys.setuid(uid)
