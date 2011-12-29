@@ -1,3 +1,9 @@
+chimera (1.0.1.14) oneiric; urgency=low
+
+  * fixed some logging
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Wed, 28 Dec 2011 16:33:40 -0800
+
 chimera (1.0.1.13) oneiric; urgency=low
 
   * added support for local packages and use of apt-get download 
