@@ -244,7 +244,7 @@ static void daemonize( const char *lockfile )
     ostringstream oss;
     oss << pid << endl;
     string pidstr = oss.str();
-    write(lfp, pidstr.c_str(), pidstr.size());
+    size_t wlen = write(lfp, pidstr.c_str(), pidstr.size());
 
     /* Cancel certain signals */
     signal(SIGCHLD,SIG_DFL); /* A child process dies */
@@ -274,9 +274,9 @@ static void daemonize( const char *lockfile )
     }
 
     /* Redirect standard files to /dev/null */
-    freopen( "/dev/null", "r", stdin);
-    freopen( "/dev/null", "w", stdout);
-    freopen( "/dev/null", "w", stderr);
+    FILE* in = freopen( "/dev/null", "r", stdin);
+    FILE* out = freopen( "/dev/null", "w", stdout);
+    FILE* err = freopen( "/dev/null", "w", stderr);
 
     /* Tell the parent process that we are A-okay */
     kill( parent, SIGUSR1 );
