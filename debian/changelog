@@ -1,3 +1,9 @@
+chimera (1.0.1.15) oneiric; urgency=low
+
+  * added ruby-thrift as a dependency
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Thu, 29 Dec 2011 20:41:24 -0800
+
 chimera (1.0.1.14) oneiric; urgency=low
 
   * fixed some logging
