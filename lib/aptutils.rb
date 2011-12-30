@@ -6,7 +6,7 @@ def parse_version(version_string)
     match = re.match(to_match)
     version.push(Integer(match.captures[1]))
     if (match.captures[2][0] != nil)
-      version.push(match.captures[2][0].bytes.first)
+      version.push(match.captures[2].bytes.first)
     end
     to_match = match.post_match
   end
@@ -102,7 +102,7 @@ def get_package_name(package_info)
   return package_info["Package"]
 end
 
-def get_cache_deb(package_info) 
+def get_cache_deb(package_info, dl_if_not_found = false) 
   if ($ARCHITECTURE == nil)
     $ARCHITECTURE = `dpkg --print-architecture`.chomp
   end
@@ -124,7 +124,7 @@ def get_cache_deb(package_info)
   failed = false
   failures = []
   root_cache = "/var/cache/apt/archives"
-  while not tried_download do
+  while not tried_download and dl_if_not_found do
     if do_download
       puts "trying to download package that's not in the cache"
       root_cache = "/tmp"

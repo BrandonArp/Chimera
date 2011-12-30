@@ -50,7 +50,7 @@ def recurse_prep(package_name, manifest_file, recurse_hash = Hash.new(), provide
   if not File.exist?(my_cache_deb)
     `apt-get install -y -d --reinstall #{package_name}`
   end
-  my_cache_deb = get_cache_deb(my_info)
+  my_cache_deb = get_cache_deb(my_info, true)
   if not File.exist?(my_cache_deb)
     puts "FATAL ERROR: could not download or determine downloaded location for package #{package_name}"
     exit -1
