@@ -1,3 +1,9 @@
+chimera (1.0.1.17ubuntu1) oneiric; urgency=low
+
+  * minor bug fix for backwards logic 
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Thu, 29 Dec 2011 23:15:25 -0800
+
 chimera (1.0.1.17) oneiric; urgency=low
 
   * optimised package fetch and caching

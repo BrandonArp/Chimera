@@ -143,7 +143,7 @@ def get_cache_deb(package_info, dl_if_not_found = false)
       failed = true
     end
     do_download = true
-    if dl_if_not_found
+    if not dl_if_not_found
       tried_download = true
     end
   end
