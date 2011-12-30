@@ -1,3 +1,9 @@
+chimera (1.0.1.16) oneiric; urgency=low
+
+  * fixed a bug with package versions and ruby 1.9.x
+
+ -- Brandon Arp <brandon@arpnetworking.com>  Thu, 29 Dec 2011 22:31:54 -0800
+
 chimera (1.0.1.15) oneiric; urgency=low
 
   * added ruby-thrift as a dependency
