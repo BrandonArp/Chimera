@@ -6,7 +6,7 @@ def parse_version(version_string)
     match = re.match(to_match)
     version.push(Integer(match.captures[1]))
     if (match.captures[2][0] != nil)
-      version.push(match.captures[2][0])
+      version.push(match.captures[2][0].bytes.first)
     end
     to_match = match.post_match
   end
