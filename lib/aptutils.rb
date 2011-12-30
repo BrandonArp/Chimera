@@ -124,7 +124,7 @@ def get_cache_deb(package_info, dl_if_not_found = false)
   failed = false
   failures = []
   root_cache = "/var/cache/apt/archives"
-  while not tried_download and dl_if_not_found do
+  while not tried_download do
     if do_download
       puts "trying to download package that's not in the cache"
       root_cache = "/tmp"
@@ -143,6 +143,9 @@ def get_cache_deb(package_info, dl_if_not_found = false)
       failed = true
     end
     do_download = true
+    if dl_if_not_found
+      tried_download = true
+    end
   end
   return deb_pkg_orig
 end
