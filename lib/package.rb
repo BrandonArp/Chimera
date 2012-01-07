@@ -1,11 +1,11 @@
 class String
-  def underscore
-    self.gsub(/::/, '/').
-    gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
-    gsub(/([a-z\d])([A-Z])/,'\1_\2').
-    tr("-", "_").
-    downcase
-  end
+    def underscore
+        self.gsub(/::/, '/').
+        gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+        gsub(/([a-z\d])([A-Z])/,'\1_\2').
+        tr("-", "_").
+        downcase
+    end
 end
 
 =begin rdoc
@@ -15,9 +15,10 @@ class Package_versions
     
     def initialize(control_blob)
         blocks = control_blob.split("\n\n")
-        $versions = blocks.map do |block|
+        @versions = blocks.map do |block|
             Version.new(block)
         end
+        @versions.sort!
     end
     
     def self.new(package_name)
@@ -26,17 +27,15 @@ class Package_versions
         super.new(package_info)
     end
     
-    def self.from_deb_file(deb_file)
-        if not File.exist?(deb_file)
-            raise "deb file not found: #{deb_file}"
+    def versions
+        @versions.map do |package_version|
+            package_version
         end
-        package_info = `dpkg-deb --info #{deb_file}`
-        super.new(package_info)
     end
     
-    #--
-    # needs things like versions, get(version), 
-    #++
+    def [](version)
+        @versions.find {|i| i.version == version }
+    end
 
 end
 
@@ -44,6 +43,7 @@ end
     represents a single version of a package.
 =end
 class Package
+    include Comparable
     attr_accessor :name
     
     #--
@@ -54,20 +54,17 @@ class Package
         define_method("#{name}") do 
             instance_variable_get("@#{name}")
         end
-        define_method("#{name}=" do |val|
-            instance_variable_set("@#{name}", val); 
-        end
         instance_variable_set("@#{name}", value); 
     end
     
     def initialize()
         block.each_line do |line| 
             if (line =~ /^\s*(\S+): (.*)$/)
-                addProperty($1.underscore.to_symbol, $2)
+                addProperty($1.underscore, $2)
             end
         end
         #handle version being unset...
-        @parsed_version = parse_version(@version)
+        @version = Version_String.new(@version)
         @name = @package
         @provides = if @provides
                 @provices.split(', ')
@@ -75,24 +72,15 @@ class Package
                 []
             end
     end
-    
-    def parse_version(version_string)
-        version = []
-        re = /([^0-9]*([0-9]+)([a-zA-Z]?))/
-        to_match = version_string
-        while to_match != "" do
-            match = re.match(to_match)
-            version.push(Integer(match.captures[1]))
-            if (match.captures[2][0] != nil)
-                version.push(match.captures[2].bytes.first)
-            end
-            to_match = match.post_match
+        
+    def self.from_deb_file(deb_file)
+        if not File.exist?(deb_file)
+            raise "deb file not found: #{deb_file}"
         end
-        return version
+        package_info = `dpkg-deb --info #{deb_file}`
+        new(package_info)
     end
-
     
-
     def get_cache_deb(dl_if_not_found = false) 
         if ($ARCHITECTURE == nil)
             $ARCHITECTURE = `dpkg --print-architecture`.chomp
@@ -138,25 +126,62 @@ class Package
         return deb_pkg_orig
     end
     
-    
     def <=> (left, right)
-        left_v = left.version
-        right_v = right.version
-        max_compare = [left_v.size, right_v.size].min
-        0.upto(max_compare) do |i|
-            if (Integer(left_v[i]) > Integer(right_v[i]))
-                return -1
-            elsif Integer(right_v[i]) > Integer(left_v[i])
-                return 1
-            end
+        left.version <=> right.version
+    end
+
+end
+
+=begin rdoc
+This class represents a version string with compairison logic.
+For all other purposes, it behaves as a string.
+
+Note: calling ! methods on it will not have any affect on the underlying values.
+=end
+class Version_String
+    include Comparable
+    
+    def initialize(the_string)
+        the_string = the_string.trim
+        @version_array = []
+        re = /(^([0-9]+)|(^[a-zA-Z]+)|^\.)/
+        to_match = version_string
+        until to_match.empty?
+            match = re.match(to_match)
+            @version_array << do_convert(match)
+            to_match = match.post_match
         end
-        if left_v.size == right_v.size
-            return 0
-        elsif left_v.size > right_v.size
-            return -1
-        elsif right_v.size > left_v.size
-            return 1
+    end
+    
+    def do_convert(aString)
+        if aString =~ /\d+/
+            #we need to do something about leading 0s, they shouldn't go away....
+            aString.to_i
+        else
+            aString
         end
+    end
+    
+    def <=>(left, right)
+        length = [left.length, right.length].min
+        res = left.first(length) <=> right.first(length)
+        if res != 0
+            res
+        else
+            left.length <=> right.length
+        end
+    end
+    
+    def to_s
+        @version_array.join
+    end
+    
+    def to_str
+        to_s
+    end
+    
+    def method_missing(name, *args, &block)
+        to_s.send(name, *args, &block)
     end
 
 end
