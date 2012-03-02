@@ -17,20 +17,20 @@ install : chimera-server
 run : chimera-server
 	sudo ./chimera-server -n
 
-chimera-server: lib-chimera chimera_server.o
+chimera-server: lib-chimera.mark chimera_server.o
 	$(CXX) $(LDFLAGS) gen-cpp/*.o *.o $(LIB_DIR) $(LIBS) -o $@
 	
 clean :
 	$(RM) -r gen-cpp
 	$(RM) -r gen-rb
 	$(RM) *.o chimera-server
-	$(RM) lib-chimera generated-sources
+	$(RM) *.mark
 
-lib-chimera: generated-sources gen-cpp/chimera_types.o gen-cpp/chimera_constants.o gen-cpp/Chimera.o 
-	touch lib-chimera
+lib-chimera.mark: generated-sources.mark gen-cpp/chimera_types.o gen-cpp/chimera_constants.o gen-cpp/Chimera.o 
+	touch lib-chimera.mark
 
-generated-sources : gen-cpp gen-rb
-	touch generated-sources
+generated-sources.mark : gen-cpp gen-rb
+	touch generated-sources.mark
 
 %.o : %.cpp
 	$(COMPILE) $(THRIFT_DEFS) -c -o $@ $< 

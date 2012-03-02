@@ -1,0 +1,12 @@
+debian/chimera
+debian/chimera.debhelper.log
+debian/chimera.substvars
+debian/files
+chimera-service/gen-cpp
+chimera-service/gen-rb
+chimera-service/chimera-server
+*.o
+*.swp
+lib/gen-rb
+chimera-server
+*.mark
